@@ -189,6 +189,13 @@ public:
 
 //==============================================================================
 
+    void setWriteConvergenceSurfaceBalance(const bool flag)
+    {
+        setWriteConvergenceHistory(flag);
+    }
+
+//==============================================================================
+
     double massBlowingRate() {
         return mp_mass_blowing_rate->computeBlowingFlux();
     }

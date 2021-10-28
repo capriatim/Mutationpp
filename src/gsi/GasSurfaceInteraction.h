@@ -173,6 +173,12 @@ public:
     void setIterationsSurfaceBalance(const int& iter);
 
     /**
+     * Function which allows to report convergence history for Newton solves.
+     * Default is false.
+     */
+    void setWriteConvergenceSurfaceBalance(const bool flag);
+
+    /**
      * Function which return the total mass blowing flux.
      *
      * @param mdot on return mass blowing flux kg/(m^2-s)

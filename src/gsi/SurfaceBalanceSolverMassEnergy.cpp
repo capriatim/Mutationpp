@@ -232,6 +232,13 @@ public:
 
 //==============================================================================
 
+    void setWriteConvergenceSurfaceBalance(const bool flag)
+    {
+        setWriteConvergenceHistory(flag);
+    }
+
+//==============================================================================
+
     double massBlowingRate()
     {
         if (mp_surf_chem != NULL)

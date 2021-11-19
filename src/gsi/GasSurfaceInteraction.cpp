@@ -217,6 +217,13 @@ void GasSurfaceInteraction::setWriteConvergenceSurfaceBalance(const bool flag)
 
 //==============================================================================
 
+void GasSurfaceInteraction::setConvergenceToleranceSurfaceBalance(const double& tol)
+{
+    mp_surf->setConvergenceToleranceSurfaceBalance(tol);
+}
+
+//==============================================================================
+
 void GasSurfaceInteraction::getMassBlowingRate(double& mdot){
     mdot = mp_surf->massBlowingRate();
 }

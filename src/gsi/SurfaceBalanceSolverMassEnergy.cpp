@@ -239,6 +239,13 @@ public:
 
 //==============================================================================
 
+    void setConvergenceToleranceSurfaceBalance(const double& tol)
+    {
+        setEpsilon(tol);
+    }
+
+//==============================================================================
+
     double massBlowingRate()
     {
         if (mp_surf_chem != NULL)

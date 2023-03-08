@@ -216,6 +216,12 @@ void GasSurfaceInteraction::getMassBlowingRate(double& mdot){
 
 //==============================================================================
 
+void GasSurfaceInteraction::getRadiativeHeatFlux(double& qrad){
+    qrad = mp_surf->radiativeHeatFlux();
+}
+
+//==============================================================================
+
 inline void GasSurfaceInteraction::errorWrongTypeofGSIFile(
     const std::string& gsi_root_tag)
 {

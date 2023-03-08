@@ -222,6 +222,12 @@ void GasSurfaceInteraction::getRadiativeHeatFlux(double& qrad){
 
 //==============================================================================
 
+void GasSurfaceInteraction::getSurfaceEmissivity(double& eps){
+    eps = mp_surf->surfaceEmissivity();
+}
+
+//==============================================================================
+
 inline void GasSurfaceInteraction::errorWrongTypeofGSIFile(
     const std::string& gsi_root_tag)
 {

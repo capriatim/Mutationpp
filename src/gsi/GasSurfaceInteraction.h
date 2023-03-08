@@ -186,6 +186,13 @@ public:
      */
     void getRadiativeHeatFlux(double& qrad);
 
+    /**
+     * Function which returns the surface emissivity.
+     *
+     * @param eps on return surface emissivity
+     */
+    void getSurfaceEmissivity(double& eps);
+
 private:
     /**
      * Error function; wrong type of Gas Surface Interaction input file.

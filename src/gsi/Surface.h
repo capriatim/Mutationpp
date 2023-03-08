@@ -207,6 +207,18 @@ public:
 
 //==============================================================================
 
+    /**
+     * Purely virtual function returning the surface emissivity.
+     */
+    virtual double surfaceEmissivity()
+    {
+        throw LogicError()
+        << "emissivity can be called only when solving "
+        << "the surface energy balance!";
+    }
+
+//==============================================================================
+
 };
 
     } // namespace GasSurfaceInteraction

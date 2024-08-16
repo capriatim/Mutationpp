@@ -1,8 +1,8 @@
 /**
  * @file GSIRateLawGammaT.cpp
  *
- * @brief Class which computes the reaction rate constant for an adsorption
- *        surface reaction based on an Arrhenius formula.
+ * @brief Class which computes the reaction rate constant for a gas 
+ *        independent ablation surface reaction based on an Arrhenius formula.
  */
 
 /*
@@ -46,11 +46,7 @@ class GSIRateLawLHAblaArrhenius : public GSIRateLaw
 public:
     GSIRateLawLHAblaArrhenius(ARGS args)
         : GSIRateLaw(args),
-          m_surf_props(args.s_surf_props),
-          mv_react(args.s_reactants),
-          pos_T_trans(0),
-          pos_gas_r(0),
-          pos_site_r(1)
+          pos_T_trans(0)
     {
         assert(args.s_node_rate_law.tag() == "LH_abla_arrhenius");
 
@@ -60,17 +56,6 @@ public:
         args.s_node_rate_law.getAttribute( "T", m_T_act,
             "The activation temperature for the reaction "
             "should be provided for an adsorption reaction.");
-
-        // For the gas in the reactants
-        m_idx_gas = mv_react[pos_gas_r];
-        // Error if m_idx_gas > ns
-
-        // For the sites
-        int idx_site = mv_react[pos_site_r];
-        // Error if idx_site > ns
-
-        m_site_categ = m_surf_props.siteSpeciesToSiteCategoryIndex(idx_site);
-        m_n_sites = m_surf_props.nSiteDensityInCategory(m_site_categ);
     }
 
 //==============================================================================
@@ -84,31 +69,14 @@ public:
     {
     	const double Tsurf = v_Tsurf(pos_T_trans);
 
-    	//const int set_state_with_rhoi_T = 1;
-        //m_thermo.setState(v_rhoi.data(), v_Tsurf.data(), set_state_with_rhoi_T);
-        //const double thermal_speed =
-        //    m_transport.speciesThermalSpeed(m_idx_gas);
-
-        //return m_pre_exp * thermal_speed * sqrt(NA/m_n_sites)/
-        //    (4.) * exp(-m_T_act / Tsurf);
-
 	return m_pre_exp*exp(-m_T_act / Tsurf); 
     }
 
 private:
     const size_t pos_T_trans;
-    const size_t pos_gas_r;
-    const size_t pos_site_r;
-
-    int m_idx_gas;
-    int m_site_categ;
-    double m_n_sites;
 
     double m_pre_exp;
     double m_T_act;
-
-    const std::vector<int>& mv_react;
-    const SurfaceProperties& m_surf_props;
 };
 
 ObjectProvider<

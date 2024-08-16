@@ -1,7 +1,7 @@
 /**
  * @file GSIRateLawGammaT.cpp
  *
- * @brief Class which computes the reaction rate constant for an HL
+ * @brief Class which computes the reaction rate constant for an ER
  *        surface reaction based on an Arrhenius formula.
  */
 
@@ -41,17 +41,18 @@ using namespace Mutation::Utilities::Config;
 namespace Mutation {
     namespace GasSurfaceInteraction {
 
-class GSIRateLawLHArrhenius : public GSIRateLaw
+class GSIRateLawER2Arrhenius : public GSIRateLaw
 {
 public:
-    GSIRateLawLHArrhenius(ARGS args)
+    GSIRateLawER2Arrhenius(ARGS args)
         : GSIRateLaw(args),
           m_surf_props(args.s_surf_props),
           mv_react(args.s_reactants),
           pos_T_trans(0),
-          pos_site_r(0)
+          pos_gas_r(0),
+          pos_site_r(1)
     {
-        assert(args.s_node_rate_law.tag() == "LH_arrhenius");
+        assert(args.s_node_rate_law.tag() == "ER_arrhenius");
 
         args.s_node_rate_law.getAttribute( "pre_exp", m_pre_exp,
             "The sticking coeffcient probability for the reaction "
@@ -60,19 +61,21 @@ public:
             "The activation temperature for the reaction "
             "should be provided for an adsorption reaction.");
 
+        // For the gas in the reactants
+        m_idx_gas = mv_react[pos_gas_r];
+        // Error if m_idx_gas > ns
+
         // For the sites
-        m_idx_site = mv_react[pos_site_r];
+        int idx_site = mv_react[pos_site_r];
+        // Error if idx_site > ns
 
-        m_site_categ = m_surf_props.siteSpeciesToSiteCategoryIndex(m_idx_site);
+        m_site_categ = m_surf_props.siteSpeciesToSiteCategoryIndex(idx_site);
         m_n_sites = m_surf_props.nSiteDensityInCategory(m_site_categ);
-
-        int gas_index = m_surf_props.surfaceToGasIndex(m_idx_site);
-        m_mw_r = m_thermo.speciesMw()[gas_index] / NA;
     }
 
 //==============================================================================
 
-    ~GSIRateLawLHArrhenius( ){ }
+    ~GSIRateLawER2Arrhenius( ){ }
 
 //==============================================================================
 
@@ -81,30 +84,34 @@ public:
     {
     	const double Tsurf = v_Tsurf(pos_T_trans);
 
-	return m_pre_exp *sqrt(1.0/m_n_sites) * sqrt(PI*KB*Tsurf/ (2.0*m_mw_r)) * exp(-m_T_act/ Tsurf);
+    	const int set_state_with_rhoi_T = 1;
+        m_thermo.setState(v_rhoi.data(), v_Tsurf.data(), set_state_with_rhoi_T);
+        const double thermal_speed =
+            m_transport.speciesThermalSpeed(m_idx_gas);
 
+        return m_pre_exp * thermal_speed /
+            (4. * m_n_sites * m_n_sites) * exp(-m_T_act / Tsurf);
     }
 
 private:
     const size_t pos_T_trans;
+    const size_t pos_gas_r;
     const size_t pos_site_r;
 
-    int m_idx_site;
+    int m_idx_gas;
     int m_site_categ;
     double m_n_sites;
 
     double m_pre_exp;
     double m_T_act;
-    
-    double m_mw_r;
 
     const std::vector<int>& mv_react;
     const SurfaceProperties& m_surf_props;
 };
 
 ObjectProvider<
-    GSIRateLawLHArrhenius, GSIRateLaw>
-    gsi_rate_law_lh_arrhenius("LH_arrhenius");
+    GSIRateLawER2Arrhenius, GSIRateLaw>
+    gsi_rate_law_er2_arrhenius("ER_2_arrhenius");
 
     } // namespace GasSurfaceInteraction
 } // namespace Mutation

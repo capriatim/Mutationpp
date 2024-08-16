@@ -30,10 +30,10 @@ add_sources(mutation++
     GSIReactionDetailed.cpp
     GSIRateLawAdsorption.cpp
     GSIRateLawDesorptionTST.cpp
-    GSIRateLawDesorptionTST2.cpp
     GSIRateLawGammaConst.cpp
     GSIRateLawGammaT.cpp
     GSIRateLawERArrhenius.cpp
+    GSIRateLawER2Arrhenius.cpp
     GSIRateLawHLArrhenius.cpp
     GSIRateLawHLArrhenius_abla.cpp
     GSIRateLawSublimation.cpp

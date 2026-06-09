@@ -1090,7 +1090,7 @@ void Thermodynamics::elementFractions(
 //==============================================================================
 
 void Thermodynamics::surfaceMassBalance(
-    const double *const p_Yke, const double *const p_Ykg, const double *const p_Ycp, 
+    const double *const p_Yke, const double *const p_Ykg, const double *const p_Ykc,
     const double T, const double P, const double Bg, double &Bc, double &hw,
     double *const p_Xs)
 {
@@ -1110,13 +1110,13 @@ void Thermodynamics::surfaceMassBalance(
     
     // Use "large" amount of condences phase to simulate infinite surface
     double LargeNumber = 100.0; 
-    std::vector<int> condencedPhaseElements;
+    std::vector<int> condensedPhaseElements;
     double tol = 1.0e-16;
     for (int i = 0; i < ne; ++i) {
-        p_Xw[i] += LargeNumber*p_Ycp[i];
-        sum += LargeNumber*p_Ycp[i];
-        if (abs(p_Ycp[i]) > tol) 
-            condencedPhaseElements.push_back(i);   
+        p_Xw[i] += LargeNumber*p_Ykc[i];
+        sum += LargeNumber*p_Ykc[i];
+        if (abs(p_Ykc[i]) > tol)
+            condensedPhaseElements.push_back(i);
     }
     
     for (int i = 0; i < ne; ++i)
@@ -1143,9 +1143,9 @@ void Thermodynamics::surfaceMassBalance(
     double sum_Yg = 0.0;
     double sum_Yw = 0.0;
     double sum_YCp = 1.0;  //Assumed equal to one
-    int ncp = condencedPhaseElements.size();
+    int ncp = condensedPhaseElements.size();
     for (int i=0; i < ncp; ++i ) {
-        int idx_cp = condencedPhaseElements[i];
+        int idx_cp = condensedPhaseElements[i];
         sum_Ye += p_Yke[idx_cp];
         sum_Yg += p_Ykg[idx_cp];
         sum_Yw += p_Yw[idx_cp];
@@ -1153,7 +1153,7 @@ void Thermodynamics::surfaceMassBalance(
     
     // Compute char mass blowing rate
     Bc = (Bg*(sum_Yg - sum_Yw) + sum_Ye - sum_Yw)/(sum_Yw - sum_YCp);
-    Bc = std::max(Bc, 1.0e-8);
+    Bc = std::max(Bc, 1.0e-16);
     
     // Compute the gas enthalpy
     speciesHOverRT(T, p_h);

@@ -873,7 +873,7 @@ public:
      * 
      * @param p_Yke Element mass fractions of boundary layer edge.
      * @param p_Ykg Element mass fractions of the pyrolysis gas.
-     * @param p_Ycp Element mass fractions of the condenced phase.
+     * @param p_Ykc Element mass fractions of the condensed phase.
      * @param T Temperature at the surface in K.
      * @param P Pressure at the surface in Pa.
      * @param Bg Non-dimensional pyrolysis gas mass blowing rate.
@@ -883,7 +883,7 @@ public:
      * the surface.
      */
     void surfaceMassBalance(
-        const double *const p_Yke, const double *const p_Ykg, const double *const p_Ycp, 
+        const double *const p_Yke, const double *const p_Ykg, const double *const p_Ykc,
         const double T, const double P, const double Bg, double &Bc, double &hw,
         double *const p_Xs = NULL);
     

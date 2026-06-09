@@ -46,14 +46,14 @@ using namespace Mutation::Utilities;
  *
  *    bprime \f$-T\f$ \f$T_1\f$:\f$\Delta T\f$:\f$T_2\f$ \f$-p\f
  *    \f$p\f$ \f$-b\f \f$B'_g\f$ \f$-m\f mixture \f$-bl\f BL \f$-py \f Pyrolysis
- *    \f$-cp \f CondencedPhase
+ *    \f$-cp \f CondensedPhase
  * This program generates a so-called "B-prime" table for a given temperature
  * range and stepsize in K, a fixed pressure in Pa, a value of \f$B'_g\f$
  * (pyrolysis mass flux, nondimensionalized by the boundary layer edge mass
  * flux), a given mixture name.  
- * The `BL`, `Pyrolysis`, and `CondencedPhase` arguments are the names of the 
+ * The `BL`, `Pyrolysis`, and `CondensedPhase` arguments are the names of the
  * [elemental compositions](@ref compositions) in the mixture file which represent 
- * the boundary layer edge and pyrolysis gases, and the condenced phase. 
+ * the boundary layer edge and pyrolysis gases, and the condensed phase.
  * The produced table provides values of \f$B'_c\f$, the wall enthalpy in MJ/kg, 
  * and the species mole fractions at the wall versus temperature.
  */
@@ -69,10 +69,10 @@ typedef struct Options {
     std::string mixture;
     std::string boundary_layer_comp;
     std::string pyrolysis_composition;
-    std::string condenced_phase_composition;
+    std::string condensed_phase_composition;
 
     bool pyrolysis_exist = false;
-    bool condenced_phase_exist = false;
+    bool condensed_phase_exist = false;
 } Options;
 
 // Checks if an option is present
@@ -124,14 +124,14 @@ void printHelpMessage(const char* const name) {
          << "-py                 pyrolysis composition name (default = null)"
          << endl;
     cout << tab
-         << "-cp                 condenced phase composition name (default = carbon)"
+         << "-cp                 condensed phase composition name (default = carbon)"
          << endl;
 
     cout << endl;
     cout << "Example:" << endl;
     cout
         << tab << name
-        << " -T 300:100:5000 -P 101325 -b 10 -m carbonPhenol -bl BLedge -py Gas -cp CondencedPhase"
+        << " -T 300:100:5000 -P 101325 -b 10 -m carbonPhenol -bl BLedge -py Gas -cp CondensedPhase"
         << endl;
     cout << endl;
     cout << "Mixture file:" << endl;
@@ -145,7 +145,7 @@ void printHelpMessage(const char* const name) {
          << "Gas - corresponds to the pyrolysis elemental gas composition"
          << endl;
     cout << tab
-         << "CondencedPhase - corresponds to the condenced phase composition"
+         << "CondensedPhase - corresponds to the condensed phase composition"
          << endl;
     cout << endl;
 
@@ -254,8 +254,8 @@ Options parseOptions(int argc, char** argv) {
     }
 
     if (optionExists(argc, argv, "-cp")) {
-        opts.condenced_phase_composition = getOption(argc, argv, "-cp");
-        opts.condenced_phase_exist = true;
+        opts.condensed_phase_composition = getOption(argc, argv, "-cp");
+        opts.condensed_phase_exist = true;
     }
 
 
@@ -276,7 +276,7 @@ int main(int argc, char* argv[]) {
 
     std::vector<double> Yke(ne, 0);
     std::vector<double> Ykg(ne, 0);
-    std::vector<double> Ycp(ne, 0);
+    std::vector<double> Ykc(ne, 0);
     std::vector<double> Xw(ns, 0);
 
     // Run conditions
@@ -293,11 +293,11 @@ int main(int argc, char* argv[]) {
         mix.getComposition(opts.pyrolysis_composition, Ykg.data(),
                            Composition::MASS);
 
-    if (opts.condenced_phase_exist)
-        mix.getComposition(opts.condenced_phase_composition, Ycp.data(), Composition::MASS);
+    if (opts.condensed_phase_exist)
+        mix.getComposition(opts.condensed_phase_composition, Ykc.data(), Composition::MASS);
     else {
         int ic = mix.elementIndex("C");
-        Ycp[ic] = 1.0; 
+        Ykc[ic] = 1.0;
     }
 
     cout << setw(10) << "\"Tw[K]\"" << setw(15) << "\"B'c\"" << setw(15)
@@ -307,7 +307,7 @@ int main(int argc, char* argv[]) {
     cout << endl;
 
     for (double T = T1; T < T2 + 1.0e-6; T += dt) {
-        mix.surfaceMassBalance(Yke.data(), Ykg.data(), Ycp.data(), T, P, Bg, Bc, hw,
+        mix.surfaceMassBalance(Yke.data(), Ykg.data(), Ykc.data(), T, P, Bg, Bc, hw,
                                Xw.data());
         cout << setw(10) << T << setw(15) << Bc << setw(15) << hw / 1.0e6;
         for (int i = 0; i < ns; ++i) cout << setw(25) << Xw[i];

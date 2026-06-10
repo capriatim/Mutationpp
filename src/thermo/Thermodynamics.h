@@ -873,7 +873,6 @@ public:
      * 
      * @param p_Yke Element mass fractions of boundary layer edge.
      * @param p_Ykg Element mass fractions of the pyrolysis gas.
-     * @param p_Ykc Element mass fractions of the condensed phase.
      * @param T Temperature at the surface in K.
      * @param P Pressure at the surface in Pa.
      * @param Bg Non-dimensional pyrolysis gas mass blowing rate.
@@ -881,11 +880,13 @@ public:
      * @param hw On return, enthalpy of the mixed gas at the surface in J/kg.
      * @param p_Xs (optional) On return, vector of species mole fractions at
      * the surface.
+     * @param p_Ykc (optional) Element mass fractions of the condensed phase.
+     * If not value is passed, a carbon surface is assumed.
      */
     void surfaceMassBalance(
-        const double *const p_Yke, const double *const p_Ykg, const double *const p_Ykc,
+        const double *const p_Yke, const double *const p_Ykg,
         const double T, const double P, const double Bg, double &Bc, double &hw,
-        double *const p_Xs = NULL);
+        double *const p_Xs = NULL, const double *const p_Ykc = NULL);
     
 private:
 

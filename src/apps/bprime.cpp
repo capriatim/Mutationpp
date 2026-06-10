@@ -307,8 +307,8 @@ int main(int argc, char* argv[]) {
     cout << endl;
 
     for (double T = T1; T < T2 + 1.0e-6; T += dt) {
-        mix.surfaceMassBalance(Yke.data(), Ykg.data(), Ykc.data(), T, P, Bg, Bc, hw,
-                               Xw.data());
+        mix.surfaceMassBalance(Yke.data(), Ykg.data(), T, P, Bg, Bc, hw,
+                               Xw.data(), Ykc.data());
         cout << setw(10) << T << setw(15) << Bc << setw(15) << hw / 1.0e6;
         for (int i = 0; i < ns; ++i) cout << setw(25) << Xw[i];
         cout << endl;

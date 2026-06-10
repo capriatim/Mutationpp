@@ -452,11 +452,7 @@ void NAME_MANGLE(surface_mass_balance)
      const double* const P, const double* const Bg, double* const Bc,
      double* const hw, double *const p_Xs)
 {
-    const int ne = p_mix->nElements();
-    std::vector<double> Ykc (ne,0);
-    int ic = p_mix->elementIndex("C");
-    Ykc[ic] = 1.0; 
-    p_mix->surfaceMassBalance(p_Yke, p_Ykg, Ykc.data(), *T, *P, *Bg, *Bc, *hw, p_Xs);
+    p_mix->surfaceMassBalance(p_Yke, p_Ykg, *T, *P, *Bg, *Bc, *hw, p_Xs);
 }
 
 //==============================================================================
@@ -465,7 +461,7 @@ void NAME_MANGLE(surface_mass_balance_general)
      const double* const T, const double* const P, const double* const Bg,
      double* const Bc, double* const hw, double *const p_Xs)
 {
-    p_mix->surfaceMassBalance(p_Yke, p_Ykg, p_Ykc, *T, *P, *Bg, *Bc, *hw, p_Xs);
+    p_mix->surfaceMassBalance(p_Yke, p_Ykg, *T, *P, *Bg, *Bc, *hw, p_Xs, p_Ykc);
 }
 
 //==============================================================================
@@ -487,14 +483,11 @@ void NAME_MANGLE(gasmixture_surface_mass_balance)
 
     std::vector<double> Yke (ne,0);
     std::vector<double> Ykg (ne,0);
-    std::vector<double> Ykc (ne,0);
-    int ic = p_mix->elementIndex("C");
-    Ykc[ic] = 1.0; 
 
     p_mix->getComposition(char_to_string(edge, edge_length), Yke.data(), Composition::MASS);
     p_mix->getComposition(char_to_string(pyro, pyro_length), Ykg.data(), Composition::MASS);
 
-    p_mix->surfaceMassBalance(Yke.data(), Ykg.data(), Ykc.data(), *T, *P, *Bg, *Bc, *hw, p_Xs);
+    p_mix->surfaceMassBalance(Yke.data(), Ykg.data(), *T, *P, *Bg, *Bc, *hw, p_Xs);
 }
 
 //==============================================================================
@@ -514,7 +507,7 @@ void NAME_MANGLE(gasmixture_surface_mass_balance_general)
     p_mix->getComposition(char_to_string(pyro, pyro_length), Ykg.data(), Composition::MASS);
     p_mix->getComposition(char_to_string(surf, surf_length), Ykc.data(), Composition::MASS);
 
-    p_mix->surfaceMassBalance(Yke.data(), Ykg.data(), Ykc.data(), *T, *P, *Bg, *Bc, *hw, p_Xs);
+    p_mix->surfaceMassBalance(Yke.data(), Ykg.data(), *T, *P, *Bg, *Bc, *hw, p_Xs, Ykc.data());
 }
 
 //==============================================================================

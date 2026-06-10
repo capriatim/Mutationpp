@@ -886,7 +886,7 @@ public:
     void surfaceMassBalance(
         const double *const p_Yke, const double *const p_Ykg,
         const double T, const double P, const double Bg, double &Bc, double &hw,
-        double *const p_Xs = NULL, const double *const p_Ykc = NULL);
+        double *const p_Xs = nullptr, const double *const p_Ykc = nullptr);
     
 private:
 

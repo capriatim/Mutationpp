@@ -1098,12 +1098,12 @@ void Thermodynamics::surfaceMassBalance(
     const int ng = nGas();
     
     double p_Xw [ne];
-    double* p_X  = (p_Xs != NULL ? p_Xs : mp_work1);
+    double* p_X  = (p_Xs != nullptr ? p_Xs : mp_work1);
     double* p_h  = mp_work2;
     
     const double *p_Ykc_to_use = p_Ykc;
     std::vector<double> default_Ykc(ne);
-    if (p_Ykc == NULL) {
+    if (p_Ykc == nullptr) {
         for (int i = 0; i < ne; ++i) {
             default_Ykc[i] = 0.0;
         }    
@@ -1119,10 +1119,10 @@ void Thermodynamics::surfaceMassBalance(
         sum += p_Xw[i];
     }
     
-    // Use "large" amount of condences phase to simulate infinite surface
-    double LargeNumber = 100.0; 
+    // Use "large" amount of condensed phase to simulate infinite surface
+    const double LargeNumber = 100.0; 
     std::vector<int> condensedPhaseElements;
-    double tol = 1.0e-16;
+    const double tol = 1.0e-16;
     for (int i = 0; i < ne; ++i) {
         p_Xw[i] += LargeNumber*p_Ykc_to_use[i];
         sum += LargeNumber*p_Ykc_to_use[i];

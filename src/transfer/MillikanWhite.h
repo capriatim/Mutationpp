@@ -41,6 +41,14 @@ namespace Mutation { namespace Thermodynamics { class Thermodynamics; } }
 namespace Mutation {
     namespace Transfer {
 
+/// Set Millikan–White relaxation-time model
+/// 0 = original (default)
+/// 1 = Gnoffo (1989)
+void setMillikanWhiteModel(int model);
+
+/// Get current Millikan–White model
+int getMillikanWhiteModel();
+
 /**
  * Convenience class for building necessary data used in the Millikan-White
  * vibration-translation energy relaxation model.

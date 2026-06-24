@@ -46,6 +46,24 @@ namespace Mutation {
 // 1: Gnoffo, 1989
 static int i_model = 0;
 
+void setMillikanWhiteModel(int model)
+{
+    if (model == 0 || model == 1) {
+        i_model = model;
+    } else {
+        std::cout
+            << "Warning: Invalid Millikan–White model (" << model
+            << "). Valid values are 0 (original) or 1 (Gnoffo 1989). "
+            << "Keeping current value (" << i_model << ").\n";
+    }
+}
+
+int getMillikanWhiteModel()
+{
+    return i_model;
+}
+
+
 struct MillikanWhiteModelData::Impl
 {
     size_t index = 0;
@@ -163,7 +181,7 @@ double MillikanWhiteModel::relaxationTime(
     } else if (i_model == 1) {
         const Eigen::Map<const Eigen::ArrayXd> Xh(
             thermo.X()+(thermo.hasElectrons() ? 1 : 0), thermo.nHeavy());
-        const double tau_mw = (Xh*(m_data.a()*(T_fac - m_data.b()) - 18.42).exp()).sum()/(Xh.sum()*p_atm);
+        const double tau_mw = (Xh*(m_data.a()*(T_fac - m_data.b()) - 18.421).exp()).sum()/(Xh.sum()*p_atm);
         const double ni = thermo.numberDensity() * thermo.X()[m_data.speciesIndex()];
         const double ci = std::sqrt(8*RU*thermo.T()/(PI*m_data.molecularWeight()));
         const double tau_park = 1.0/(ni * ci * m_data.limitingCrossSection(thermo.T()));

@@ -151,13 +151,13 @@ double MillikanWhiteModel::relaxationTime(
         thermo.Y()+(thermo.hasElectrons() ? 1 : 0), thermo.nHeavy());
     const double T_fac = std::pow(thermo.T(), -1.0/3.0);
     const double p_atm = thermo.P() / ONEATM;
-    
+
     double tau = 0;
 
     if (i_model == 0) {
         const Eigen::ArrayXd tau_tau_mw = (m_data.a()*(T_fac - m_data.b()) - 18.421).exp()/p_atm;
         // Park correction
-        const Eigen::ArrayXd tau_park = ((PI*m_data.mu()*KB*thermo.T()) / 
+        const Eigen::ArrayXd tau_park = ((PI*m_data.mu()*KB*thermo.T()) /
                                         (8.0*NA)).sqrt()/thermo.P()/m_data.limitingCrossSection(thermo.T());
         tau = (Yh/m_data.molecularWeight()).sum() / ((Yh/m_data.molecularWeight())/(tau_tau_mw+tau_park)).sum();
     } else if (i_model == 1) {
@@ -169,7 +169,7 @@ double MillikanWhiteModel::relaxationTime(
         const double tau_park = 1.0/(ni * ci * m_data.limitingCrossSection(thermo.T()));
         tau = tau_mw + tau_park;
     } else {
-        std::cout << "Warning: i_model in MillikanWhite.cpp should be 0 or 1. Tau set to 0.";        
+        std::cout << "Warning: i_model in MillikanWhite.cpp should be 0 or 1. Tau set to 0.";
     }
 
     return tau;

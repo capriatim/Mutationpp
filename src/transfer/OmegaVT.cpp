@@ -126,7 +126,7 @@ double OmegaVT::source()
     auto Tv = mixture().Tv();
 
     double src = 0.0;
-    
+
     for (auto& vibrator: m_vibrators)
     {
         const auto iv = vibrator.speciesIndex();

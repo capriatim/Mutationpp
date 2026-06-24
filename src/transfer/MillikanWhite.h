@@ -101,7 +101,7 @@ public:
 
     /// Returns the array of B model parameters.
     const Eigen::ArrayXd& b() const;
-    
+
     /// Returns the array of reduced masses.
     Eigen::ArrayXd& mu();
 

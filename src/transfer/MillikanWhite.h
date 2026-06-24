@@ -101,6 +101,12 @@ public:
 
     /// Returns the array of B model parameters.
     const Eigen::ArrayXd& b() const;
+    
+    /// Returns the array of reduced masses.
+    Eigen::ArrayXd& mu();
+
+    /// Returns the array of reduced masses.
+    const Eigen::ArrayXd& mu() const;
 
     /// Sets the reference cross section in m^2.
     MillikanWhiteModelData& setReferenceCrossSection(double omegav);

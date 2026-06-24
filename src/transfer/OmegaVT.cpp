@@ -126,16 +126,26 @@ double OmegaVT::source()
     auto Tv = mixture().Tv();
 
     double src = 0.0;
+    
+    double* mp_hv;
+    double* mp_hveq;
+    
+     mp_hv = new double [mixture().nSpecies()];
+     mp_hveq = new double [mixture().nSpecies()];
+    
+    mixture().speciesHOverRT(T, T, T, T, T, NULL, NULL, NULL, mp_hveq, NULL, NULL);
+    mixture().speciesHOverRT(T, Tv, T, Tv, Tv, NULL, NULL, NULL, mp_hv, NULL, NULL);
 
     for (auto& vibrator: m_vibrators)
     {
         const auto iv = vibrator.speciesIndex();
         const auto tau = vibrator.relaxationTime(mixture());
         const auto mw = vibrator.molecularWeight();
-        src += Y[iv]*(vibrator.energy(T) - vibrator.energy(Tv))/(mw*tau);
+        //src += Y[iv]*(vibrator.energy(T) - vibrator.energy(Tv))/(mw*tau);
+        src += Y[iv]*(mp_hveq[iv] - mp_hv[iv])/(mw*tau);
     }
 
-    return src * mixture().density() * RU;
+    return src * mixture().density() * RU* T;
 }
 
 

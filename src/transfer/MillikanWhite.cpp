@@ -44,7 +44,7 @@ namespace Mutation {
 
 // 0: orginal, default
 // 1: Gnoffo, 1989
-static int i_model = 1;
+static int i_model = 0;
 
 struct MillikanWhiteModelData::Impl
 {

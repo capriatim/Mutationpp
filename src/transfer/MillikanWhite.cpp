@@ -42,23 +42,14 @@ using namespace Mutation::Thermodynamics;
 namespace Mutation {
     namespace Transfer {
 
-// 0: orginal, default
-// 1: Gnoffo, 1989
-static int i_model = 0;
+static ModelType i_model = MODEL_ORIGINAL;
 
-void setMillikanWhiteModel(int model)
+void setMillikanWhiteModel(ModelType this_model)
 {
-    if (model == 0 || model == 1) {
-        i_model = model;
-    } else {
-        std::cout
-            << "Warning: Invalid Millikan–White model (" << model
-            << "). Valid values are 0 (original) or 1 (Gnoffo 1989). "
-            << "Keeping current value (" << i_model << ").\n";
-    }
+    i_model = this_model;
 }
 
-int getMillikanWhiteModel()
+ModelType getMillikanWhiteModel()
 {
     return i_model;
 }
@@ -164,17 +155,14 @@ double MillikanWhiteModel::relaxationTime(
     const Mutation::Thermodynamics::Thermodynamics& thermo) const
 {
     // Millikan-White model for average relaxation time
-
-    const Eigen::Map<const Eigen::ArrayXd> Yh(
-        thermo.Y()+(thermo.hasElectrons() ? 1 : 0), thermo.nHeavy());
     const double T_fac = std::pow(thermo.T(), -1.0/3.0);
     const double p_atm = thermo.P() / ONEATM;
 
     double tau = 0;
 
     if (i_model == 0) {
+        const Eigen::Map<const Eigen::ArrayXd> Yh(thermo.Y()+(thermo.hasElectrons() ? 1 : 0), thermo.nHeavy());
         const Eigen::ArrayXd tau_tau_mw = (m_data.a()*(T_fac - m_data.b()) - 18.421).exp()/p_atm;
-        // Park correction
         const Eigen::ArrayXd tau_park = ((PI*m_data.mu()*KB*thermo.T()) /
                                         (8.0*NA)).sqrt()/thermo.P()/m_data.limitingCrossSection(thermo.T());
         tau = (Yh/m_data.molecularWeight()).sum() / ((Yh/m_data.molecularWeight())/(tau_tau_mw+tau_park)).sum();

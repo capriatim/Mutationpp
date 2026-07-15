@@ -42,12 +42,15 @@ namespace Mutation {
     namespace Transfer {
 
 /// Set Millikan–White relaxation-time model
-/// 0 = original (default)
-/// 1 = Gnoffo (1989)
-void setMillikanWhiteModel(int model);
+enum ModelType {
+    MODEL_ORIGINAL,     // Original (default)
+    MODEL_GNOFFO_1989   // 1: Gnoffo, 1989
+};
+
+void setMillikanWhiteModel(ModelType model);
 
 /// Get current Millikan–White model
-int getMillikanWhiteModel();
+ModelType getMillikanWhiteModel();
 
 /**
  * Convenience class for building necessary data used in the Millikan-White

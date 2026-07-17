@@ -1,11 +1,11 @@
 /**
- * @file O2_dissociation.cpp
+ * @file O2_dissociation2T.cpp
  *
- * @brief O<sub>2</sub> Dissociation example program.
+ * @brief O<sub>2</sub> Dissociation with 2T model example program.
  */
 
 /*
- * Copyright 2014 von Karman Institute for Fluid Dynamics (VKI)
+ * Copyright 2014-2020 von Karman Institute for Fluid Dynamics (VKI)
  *
  * This file is part of MUlticomponent Thermodynamic And Transport
  * properties for IONized gases in C++ (Mutation++) software package.

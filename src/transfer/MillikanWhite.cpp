@@ -27,8 +27,10 @@
 
 
 #include "MillikanWhite.h"
+#include "MillikanWhiteRelaxationTime.h"
 #include "Thermodynamics.h"
 #include "Utilities.h"
+#include "AutoRegistration.h"
 
 #include <iostream>
 #include <fstream>
@@ -42,16 +44,16 @@ using namespace Mutation::Thermodynamics;
 namespace Mutation {
     namespace Transfer {
 
-static ModelType i_model = MODEL_ORIGINAL;
+static std::string name_model = "Original";
 
-void setMillikanWhiteModel(ModelType this_model)
+void setMillikanWhiteModel(const std::string& model)
 {
-    i_model = this_model;
+    name_model = model;
 }
 
-ModelType getMillikanWhiteModel()
+const std::string& getMillikanWhiteModel()
 {
-    return i_model;
+    return name_model;
 }
 
 
@@ -148,38 +150,18 @@ double MillikanWhiteModelData::limitingCrossSection(const double& T) const
 
 MillikanWhiteModel::MillikanWhiteModel(const MillikanWhiteModelData& data) :
     m_data(data) 
-{ }
-
+{ 
+    m_relaxationTime = std::shared_ptr<MillikanWhiteRelaxationTime>(
+        Config::Factory<MillikanWhiteRelaxationTime>::create(name_model, m_data));
+}
 
 double MillikanWhiteModel::relaxationTime(
     const Mutation::Thermodynamics::Thermodynamics& thermo) const
 {
-    // Millikan-White model for average relaxation time
-    const double T_fac = std::pow(thermo.T(), -1.0/3.0);
-    const double p_atm = thermo.P() / ONEATM;
-
-    double tau = 0;
-
-    if (i_model == 0) {
-        const Eigen::Map<const Eigen::ArrayXd> Yh(thermo.Y()+(thermo.hasElectrons() ? 1 : 0), thermo.nHeavy());
-        const Eigen::ArrayXd tau_tau_mw = (m_data.a()*(T_fac - m_data.b()) - 18.421).exp()/p_atm;
-        const Eigen::ArrayXd tau_park = ((PI*m_data.mu()*KB*thermo.T()) /
-                                        (8.0*NA)).sqrt()/thermo.P()/m_data.limitingCrossSection(thermo.T());
-        tau = (Yh/m_data.molecularWeight()).sum() / ((Yh/m_data.molecularWeight())/(tau_tau_mw+tau_park)).sum();
-    } else if (i_model == 1) {
-        const Eigen::Map<const Eigen::ArrayXd> Xh(
-            thermo.X()+(thermo.hasElectrons() ? 1 : 0), thermo.nHeavy());
-        const double tau_mw = (Xh*(m_data.a()*(T_fac - m_data.b()) - 18.421).exp()).sum()/(Xh.sum()*p_atm);
-        const double ni = thermo.numberDensity() * thermo.X()[m_data.speciesIndex()];
-        const double ci = std::sqrt(8*RU*thermo.T()/(PI*m_data.molecularWeight()));
-        const double tau_park = 1.0/(ni * ci * m_data.limitingCrossSection(thermo.T()));
-        tau = tau_mw + tau_park;
-    } else {
-        std::cout << "Warning: i_model in MillikanWhite.cpp should be 0 or 1. Tau set to 0.";
-    }
-
-    return tau;
+    return m_relaxationTime->relaxationTime(thermo, m_data);
 }
+
+MillikanWhiteModel::~MillikanWhiteModel() = default;
 
 
 struct MillikanWhiteModelDB::Data

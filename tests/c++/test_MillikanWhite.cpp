@@ -47,7 +47,7 @@ TEST_CASE("MillikanWhiteModelData provides default model values", "[transfer]")
     checkDefaultModelData(true);
 }
 
-void checkDefaultRelaxationRate(bool with_electrons, ModelType this_model)
+void checkDefaultRelaxationRate(bool with_electrons, const std::string& model_name)
 {
     INFO(std::string("with_electrons = ") + (with_electrons ? "true" : "false"));
     const std::string species_list = (with_electrons ? "e- N2" : "N2");
@@ -59,9 +59,11 @@ void checkDefaultRelaxationRate(bool with_electrons, ModelType this_model)
     Mixture mix(opts);
 
     const double thetav = 3408.464;
-    MillikanWhiteModel model({mix, offset, thetav});
 
-    setMillikanWhiteModel(this_model);  
+
+    setMillikanWhiteModel(model_name);
+
+    MillikanWhiteModel model({mix, offset, thetav});
 
     const int SET_Y_AND_PT = 2;
     
@@ -88,10 +90,10 @@ void checkDefaultRelaxationRate(bool with_electrons, ModelType this_model)
 
 TEST_CASE("MillikanWhiteModel provides correct default relaxation time", "[transfer]")
 {
-    checkDefaultRelaxationRate(false, MODEL_ORIGINAL);
-    checkDefaultRelaxationRate(true, MODEL_ORIGINAL);
-    checkDefaultRelaxationRate(false, MODEL_GNOFFO_1989);
-    checkDefaultRelaxationRate(true, MODEL_GNOFFO_1989);
+    checkDefaultRelaxationRate(false, "Original");
+    checkDefaultRelaxationRate(true, "Original");
+    checkDefaultRelaxationRate(false, "Gnoffo");
+    checkDefaultRelaxationRate(true, "Gnoffo");
 }
 
 TEST_CASE("Can load MillikanWhiteModel from database", "[transfer]")

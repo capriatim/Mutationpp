@@ -41,16 +41,13 @@ namespace Mutation { namespace Thermodynamics { class Thermodynamics; } }
 namespace Mutation {
     namespace Transfer {
 
-/// Set Millikan–White relaxation-time model
-enum ModelType {
-    MODEL_ORIGINAL,     // Original (default)
-    MODEL_GNOFFO_1989   // 1: Gnoffo, 1989
-};
+class MillikanWhiteRelaxationTime;
 
-void setMillikanWhiteModel(ModelType model);
+void setMillikanWhiteModel(const std::string& model);
 
 /// Get current Millikan–White model
-ModelType getMillikanWhiteModel();
+const std::string& getMillikanWhiteModel();
+
 
 /**
  * Convenience class for building necessary data used in the Millikan-White
@@ -146,6 +143,9 @@ class MillikanWhiteModel
 public:
     /// Constructs a MillikanWhiteModel from data
     MillikanWhiteModel(const MillikanWhiteModelData&);
+    
+    /// Destructor
+    ~MillikanWhiteModel();
 
     /// Index of species in mixture.
     size_t speciesIndex() const { return m_data.speciesIndex(); }
@@ -160,6 +160,7 @@ public:
 
 private:
     MillikanWhiteModelData m_data;
+    std::shared_ptr<MillikanWhiteRelaxationTime> m_relaxationTime;
 };
 
 
@@ -184,7 +185,7 @@ private:
     std::shared_ptr<Data> m_data;
 };
 
-    } // namespace Kinetics
+    } // namespace Transfer
 } // namespace Mutation
 
 #endif // MILLIKAN_WHITE_H

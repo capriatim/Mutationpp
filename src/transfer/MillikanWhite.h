@@ -43,6 +43,7 @@ namespace Mutation {
 
 class MillikanWhiteRelaxationTime;
 
+/// Set Millikan–White model
 void setMillikanWhiteModel(const std::string& model);
 
 /// Get current Millikan–White model
